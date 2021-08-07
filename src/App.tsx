@@ -1,9 +1,9 @@
-import './App.css'
-
 import React from 'react'
 
+import Billing from './pages/Billing'
+
 function App() {
-  return <>COSMOS BILLING</>
+  return <Billing />
 }
 
 export default App
