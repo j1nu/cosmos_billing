@@ -2,8 +2,8 @@ import styled from '@emotion/styled'
 import React from 'react'
 import { Button } from 'semantic-ui-react'
 
-import BillingTable from '../components/BillingTable'
-import Layout from '../components/Layout'
+import BillingTable from '@/components/BillingTable'
+import Layout from '@/components/Layout'
 
 const ButtonContainer = styled.div`
   display: flex;

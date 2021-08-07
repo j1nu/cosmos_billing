@@ -1,8 +1,8 @@
 import React from 'react'
 import { Rating, Table } from 'semantic-ui-react'
 
-import { BILLING_TABLE_COLUMNS } from '../constants'
-import { Bill } from '../types'
+import { BILLING_TABLE_COLUMNS } from '@/constants'
+import { Bill } from '@/types'
 
 export interface ComponentProps {
   data: Bill[]
