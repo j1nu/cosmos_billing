@@ -9,8 +9,8 @@ export interface Bill {
   usedAmount: number
 
   // 이용구분
-  usedType: string
+  usedType?: string
 
   // 매입상태
-  purchaseStatus: string
+  purchaseStatus?: string
 }

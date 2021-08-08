@@ -41,7 +41,8 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "prettier": "^2.3.2",
     "prettier-eslint": "^13.0.0",
-    "prettier-eslint-cli": "^5.0.1"
+    "prettier-eslint-cli": "^5.0.1",
+    "xlsx": "^0.17.0"
   },
   "scripts": {
     "start": "craco start",
