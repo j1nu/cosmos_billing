@@ -4,10 +4,10 @@ import Table, { Column } from '@/components/Table'
 import { Bill } from '@/types'
 
 export interface ComponentProps {
-  data: Bill[]
+  bills: Bill[]
 }
 
-function BillingTable({ data }: ComponentProps) {
+function BillingTable({ bills }: ComponentProps) {
   const columns = useMemo<Column<Bill>[]>(
     () => [
       { accessor: 'usedDate', header: '이용일시' },
@@ -22,27 +22,9 @@ function BillingTable({ data }: ComponentProps) {
     [],
   )
 
-  const mockData = useMemo<Bill[]>(
-    () => [
-      {
-        purchaseStatus: '매입',
-        storeName: '서울대입구역 커피빈',
-        usedAmount: 20000,
-        usedDate: '2021-08-12',
-        usedType: '일시불',
-      },
-      {
-        purchaseStatus: '매입',
-        storeName: '영등포역 카페',
-        usedAmount: 12000,
-        usedDate: '2021-08-12',
-        usedType: '일시불',
-      },
-    ],
-    [],
-  )
+  const data = useMemo<Bill[]>(() => [...bills], [bills])
 
-  return <Table columns={columns} data={mockData} />
+  return <Table columns={columns} data={data} />
 }
 
 export default BillingTable
