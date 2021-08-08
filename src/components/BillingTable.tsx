@@ -1,7 +1,6 @@
-import React from 'react'
-import { Rating, Table } from 'semantic-ui-react'
+import React, { useMemo } from 'react'
 
-import { BILLING_TABLE_COLUMNS } from '@/constants'
+import Table, { Column } from '@/components/Table'
 import { Bill } from '@/types'
 
 export interface ComponentProps {
@@ -9,41 +8,41 @@ export interface ComponentProps {
 }
 
 function BillingTable({ data }: ComponentProps) {
-  return (
-    <Table celled padded>
-      <Table.Header>
-        <Table.Row>
-          {BILLING_TABLE_COLUMNS.map((column, index) => (
-            <Table.HeaderCell key={index}>{column}</Table.HeaderCell>
-          ))}
-        </Table.Row>
-      </Table.Header>
-
-      <Table.Body>
-        <Table.Row>
-          <Table.Cell>A</Table.Cell>
-          <Table.Cell singleLine>Power Output</Table.Cell>
-          <Table.Cell>
-            <Rating icon="star" defaultRating={3} maxRating={3} />
-          </Table.Cell>
-        </Table.Row>
-        <Table.Row>
-          <Table.Cell>A</Table.Cell>
-          <Table.Cell singleLine>Power Output</Table.Cell>
-          <Table.Cell>
-            <Rating icon="star" defaultRating={3} maxRating={3} />
-          </Table.Cell>
-        </Table.Row>
-        <Table.Row>
-          <Table.Cell>A</Table.Cell>
-          <Table.Cell singleLine>Power Output</Table.Cell>
-          <Table.Cell>
-            <Rating icon="star" defaultRating={3} maxRating={3} />
-          </Table.Cell>
-        </Table.Row>
-      </Table.Body>
-    </Table>
+  const columns = useMemo<Column<Bill>[]>(
+    () => [
+      { accessor: 'usedDate', header: '이용일시' },
+      { accessor: 'storeName', header: '가맹점명' },
+      {
+        accessor: 'usedAmount',
+        header: '이용금액',
+      },
+      { accessor: 'usedType', header: '이용구분' },
+      { accessor: 'purchaseStatus', header: '매입상태' },
+    ],
+    [],
   )
+
+  const mockData = useMemo<Bill[]>(
+    () => [
+      {
+        purchaseStatus: '매입',
+        storeName: '서울대입구역 커피빈',
+        usedAmount: 20000,
+        usedDate: '2021-08-12',
+        usedType: '일시불',
+      },
+      {
+        purchaseStatus: '매입',
+        storeName: '영등포역 카페',
+        usedAmount: 12000,
+        usedDate: '2021-08-12',
+        usedType: '일시불',
+      },
+    ],
+    [],
+  )
+
+  return <Table columns={columns} data={mockData} />
 }
 
 export default BillingTable
