@@ -1,7 +1,7 @@
 import XLSX from 'xlsx'
 import { WorkSheet } from 'xlsx/types'
 
-import { Bill } from './../types'
+import { Bill } from '@/types'
 
 export interface KBankBill {
   가맹점명: string

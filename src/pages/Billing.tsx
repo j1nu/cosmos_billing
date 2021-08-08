@@ -35,15 +35,17 @@ function Billing() {
       return
     }
 
-    const arrayBuffer = await readFileAsArrayBuffer(files[0])
+    try {
+      const arrayBuffer = await readFileAsArrayBuffer(files[0])
 
-    const { SheetNames, Sheets } = XLSX.read(arrayBuffer, { type: 'array' })
-    const workSheet = Sheets[SheetNames[0]]
+      const { SheetNames, Sheets } = XLSX.read(arrayBuffer, { type: 'array' })
+      const workSheet = Sheets[SheetNames[0]]
 
-    const kBankBills = sheetToJson(workSheet) as KBankBill[]
-    const bills = convertKBankBills(kBankBills)
+      const kBankBills = sheetToJson(workSheet) as KBankBill[]
+      const bills = convertKBankBills(kBankBills)
 
-    setBills(bills)
+      setBills(bills)
+    } catch {}
   }
 
   return (
@@ -55,6 +57,7 @@ function Billing() {
         <input
           ref={inputRef}
           type="file"
+          accept=".xls, .xlsx"
           hidden
           onChange={handleBillFileChange}
         />
