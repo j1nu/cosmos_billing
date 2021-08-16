@@ -3,10 +3,16 @@ import { Table as SemanticUITable } from 'semantic-ui-react'
 
 export type Column<T extends object> = {
   header: ReactNode
+  cell?: ComponentType<{ row: Row<T> }>
 } & (
   | { id: Extract<keyof T, string> | string }
   | { accessor: Extract<keyof T, string> }
-) & { cell?: ComponentType<{ row: T }> }
+)
+
+export interface Row<T extends object> {
+  index: number
+  data: T
+}
 
 export interface ComponentProps<T extends object> {
   columns: Column<T>[]
@@ -14,9 +20,9 @@ export interface ComponentProps<T extends object> {
 }
 
 function Table<T extends object>({ columns, data }: ComponentProps<T>) {
-  const getCell = useCallback((row: T, column: Column<T>) => {
-    if ('id' in column) {
-      return null
+  const getCell = useCallback((row: T, column: Column<T>, rowIndex: number) => {
+    if ('accessor' in column) {
+      return row[column.accessor] ?? null
     }
 
     if ('cell' in column) {
@@ -26,10 +32,10 @@ function Table<T extends object>({ columns, data }: ComponentProps<T>) {
         return null
       }
 
-      return <Component row={row} />
-    }
+      const props: Row<T> = { index: rowIndex, data: { ...row } }
 
-    return row[column.accessor] ?? null
+      return <Component row={props} />
+    }
   }, [])
 
   return (
@@ -45,11 +51,11 @@ function Table<T extends object>({ columns, data }: ComponentProps<T>) {
       </SemanticUITable.Header>
 
       <SemanticUITable.Body>
-        {data.map((row, index) => (
-          <SemanticUITable.Row key={index}>
-            {columns.map((column, index) => (
-              <SemanticUITable.Cell key={index}>
-                {getCell(row, column)}
+        {data.map((row, rowIndex) => (
+          <SemanticUITable.Row key={rowIndex}>
+            {columns.map((column, columnIndex) => (
+              <SemanticUITable.Cell key={columnIndex}>
+                {getCell(row, column, rowIndex)}
               </SemanticUITable.Cell>
             ))}
           </SemanticUITable.Row>
