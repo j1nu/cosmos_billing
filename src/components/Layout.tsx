@@ -2,8 +2,6 @@ import styled from '@emotion/styled'
 import React, { ReactNode } from 'react'
 
 const Container = styled.div`
-  background-color: #e8e8e8;
-  height: 100vh;
   padding: 3rem 0;
 `
 

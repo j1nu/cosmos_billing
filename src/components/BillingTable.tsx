@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { useState } from 'react'
 import { Checkbox } from 'semantic-ui-react'
 
@@ -9,9 +9,10 @@ type SelectedBills = Record<number, Bill>
 
 export interface ComponentProps {
   bills: Bill[]
+  onSelect: (selectedBills: Bill[]) => void
 }
 
-function BillingTable({ bills }: ComponentProps) {
+function BillingTable({ bills, onSelect }: ComponentProps) {
   const [selectedBills, setSelectedBills] = useState<SelectedBills>({})
 
   const isEmpty = useMemo(() => bills.length === 0, [bills.length])
@@ -31,13 +32,13 @@ function BillingTable({ bills }: ComponentProps) {
       }
 
       setSelectedBills(() => {
-        const newRowIndex: SelectedBills = {}
+        const newSelectedBills: SelectedBills = {}
 
         bills.forEach((bill, index) => {
-          newRowIndex[index] = bill
+          newSelectedBills[index] = bill
         })
 
-        return newRowIndex
+        return newSelectedBills
       })
     },
     [bills],
@@ -47,11 +48,11 @@ function BillingTable({ bills }: ComponentProps) {
     (row: Row<Bill>, checked?: boolean) => {
       if (!checked) {
         return setSelectedBills((prev) => {
-          const newRowIndex = { ...prev }
+          const newSelectedBills = { ...prev }
 
-          delete newRowIndex[row.index]
+          delete newSelectedBills[row.index]
 
-          return newRowIndex
+          return newSelectedBills
         })
       }
 
@@ -97,6 +98,10 @@ function BillingTable({ bills }: ComponentProps) {
   )
 
   const data = useMemo<Bill[]>(() => [...bills], [bills])
+
+  useEffect(() => {
+    onSelect(Object.values(selectedBills))
+  }, [onSelect, selectedBills])
 
   return <Table columns={columns} data={data} />
 }
