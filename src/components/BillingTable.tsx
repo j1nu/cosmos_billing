@@ -1,9 +1,14 @@
+import styled from '@emotion/styled'
 import React, { useCallback, useEffect, useMemo } from 'react'
 import { useState } from 'react'
 import { Checkbox } from 'semantic-ui-react'
 
 import Table, { Column, Row } from '@/components/Table'
 import { Bill } from '@/types'
+
+const Amount = styled.span<{ isNegative: boolean }>`
+  color: ${({ isNegative }) => (isNegative ? 'DarkGrey' : 'black')};
+`
 
 type SelectedBills = Record<number, Bill>
 
@@ -82,11 +87,16 @@ function BillingTable({ bills, onSelect }: ComponentProps) {
       { accessor: 'usedDate', header: '이용일시' },
       { accessor: 'storeName', header: '가맹점명' },
       {
+        cell: ({ row }) => (
+          <Amount isNegative={row.data.usedAmount < 0}>
+            {row.data.usedAmount}
+          </Amount>
+        ),
         accessor: 'usedAmount',
         header: '이용금액',
       },
       { accessor: 'usedType', header: '이용구분' },
-      { accessor: 'purchaseStatus', header: '매입상태' },
+      { accessor: 'accountName', header: '출금처' },
     ],
     [
       isEmpty,

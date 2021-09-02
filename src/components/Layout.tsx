@@ -3,12 +3,13 @@ import React, { ReactNode } from 'react'
 
 const Container = styled.div`
   padding: 3rem 0;
+  background-color: LightGray;
 `
 
 const Content = styled.div`
   max-width: 768px;
   margin: 0 auto;
-  background-color: white;
+  background-color: White;
   padding: 1.5rem;
 `
 

@@ -21,10 +21,6 @@ export interface ComponentProps<T extends object> {
 
 function Table<T extends object>({ columns, data }: ComponentProps<T>) {
   const getCell = useCallback((row: T, column: Column<T>, rowIndex: number) => {
-    if ('accessor' in column) {
-      return row[column.accessor] ?? null
-    }
-
     if ('cell' in column) {
       const Component = column.cell
 
@@ -35,6 +31,10 @@ function Table<T extends object>({ columns, data }: ComponentProps<T>) {
       const props: Row<T> = { index: rowIndex, data: { ...row } }
 
       return <Component row={props} />
+    }
+
+    if ('accessor' in column) {
+      return row[column.accessor] ?? null
     }
   }, [])
 

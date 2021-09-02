@@ -13,13 +13,21 @@ function Billing() {
     setBills(bills)
   }, [])
 
+  const handleAddBill = (bill: Bill) => {
+    setBills([...bills, bill])
+  }
+
   const handleSelect = useCallback((selectedBills: Bill[]) => {
     setSelectedBills(selectedBills)
   }, [])
 
   return (
     <Layout>
-      <BillSummary onLoadBill={handleLoadBill} selectedBills={selectedBills} />
+      <BillSummary
+        onLoadBill={handleLoadBill}
+        selectedBills={selectedBills}
+        onAddBill={handleAddBill}
+      />
       <BillingTable bills={bills} onSelect={handleSelect} />
     </Layout>
   )
