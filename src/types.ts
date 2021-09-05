@@ -13,4 +13,7 @@ export interface Bill {
 
   // 매입상태
   accountName?: string
+
+  // 수기입력
+  manual: boolean
 }

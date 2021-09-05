@@ -24,6 +24,7 @@ export function convertKBankBills(kBankBills: KBankBill[]) {
         storeName: 가맹점명,
         usedAmount: Number(이용금액.replace(/[^\d-]/g, '')),
         accountName: 'KBank',
+        manual: false,
       }
 
       return bill

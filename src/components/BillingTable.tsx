@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import React, { useCallback, useEffect, useMemo } from 'react'
 import { useState } from 'react'
-import { Checkbox } from 'semantic-ui-react'
+import { Checkbox, Icon } from 'semantic-ui-react'
 
 import Table, { Column, Row } from '@/components/Table'
 import { Bill } from '@/types'
@@ -15,9 +15,10 @@ type SelectedBills = Record<number, Bill>
 export interface ComponentProps {
   bills: Bill[]
   onSelect: (selectedBills: Bill[]) => void
+  onDelete: (index: number) => void
 }
 
-function BillingTable({ bills, onSelect }: ComponentProps) {
+function BillingTable({ bills, onSelect, onDelete }: ComponentProps) {
   const [selectedBills, setSelectedBills] = useState<SelectedBills>({})
 
   const isEmpty = useMemo(() => bills.length === 0, [bills.length])
@@ -66,6 +67,13 @@ function BillingTable({ bills, onSelect }: ComponentProps) {
     [],
   )
 
+  const handleDeleteBill = useCallback(
+    (index: number) => {
+      onDelete(index)
+    },
+    [onDelete],
+  )
+
   const columns = useMemo<Column<Bill>[]>(
     () => [
       {
@@ -97,6 +105,23 @@ function BillingTable({ bills, onSelect }: ComponentProps) {
       },
       { accessor: 'usedType', header: '이용구분' },
       { accessor: 'accountName', header: '출금처' },
+      {
+        cell: ({ row }) => (
+          <>
+            {row.data.manual && (
+              <Icon
+                name="close"
+                color="grey"
+                onClick={() => {
+                  handleDeleteBill(row.index)
+                }}
+              />
+            )}
+          </>
+        ),
+        accessor: 'manual',
+        header: '',
+      },
     ],
     [
       isEmpty,
@@ -104,6 +129,7 @@ function BillingTable({ bills, onSelect }: ComponentProps) {
       handleSelectAllChange,
       selectedBills,
       handleSelectChange,
+      handleDeleteBill,
     ],
   )
 

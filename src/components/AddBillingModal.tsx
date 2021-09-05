@@ -2,6 +2,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 
 import styled from '@emotion/styled'
 import React, { useRef, useState } from 'react'
+import { useCallback } from 'react'
 import DatePicker from 'react-datepicker'
 import { Button, Form, Modal, ModalActions } from 'semantic-ui-react'
 
@@ -30,7 +31,7 @@ interface Props {
   onAddBill: (bill: Bill) => void
 }
 
-function NewBillingModal({ header, onAddBill }: Props) {
+function AddBillingModal({ header, onAddBill }: Props) {
   const [open, setOpen] = React.useState<boolean>(false)
 
   const [bill, setBill] = useState<Bill>({
@@ -39,50 +40,55 @@ function NewBillingModal({ header, onAddBill }: Props) {
     usedAmount: 0,
     usedType: '',
     accountName: '',
+    manual: true,
   })
 
   const buttonRef = useRef<HTMLButtonElement>(null)
 
-  const handleSubmitNewBill = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const handleSubmitNewBill = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault()
 
-    onAddBill(bill)
+      onAddBill(bill)
 
-    setOpen(false)
+      setOpen(false)
 
-    setBill({
-      usedDate: Date(),
-      storeName: '',
-      usedAmount: 0,
-      usedType: '',
-      accountName: '',
-    })
-  }
+      setBill({
+        usedDate: Date(),
+        storeName: '',
+        usedAmount: 0,
+        usedType: '',
+        accountName: '',
+        manual: true,
+      })
+    },
+    [onAddBill, bill],
+  )
 
-  const handleChangeNewBill = ({
-    name,
-    value,
-  }: EventTarget & HTMLInputElement) => {
-    setBill({
-      ...bill,
-      [name]: value,
-    })
-
-    if (name === 'usedAmount') {
+  const handleChangeNewBill = useCallback(
+    ({ name, value }: EventTarget & HTMLInputElement) => {
       setBill({
         ...bill,
-        usedAmount: Number(value),
+        [name]: value,
       })
-    }
-  }
 
-  const handleAddBillClick = () => {
+      if (name === 'usedAmount') {
+        setBill({
+          ...bill,
+          usedAmount: Number(value),
+        })
+      }
+    },
+    [bill],
+  )
+
+  const handleAddBillClick = useCallback(() => {
     if (!buttonRef.current) {
       return
     }
 
     buttonRef.current.click()
-  }
+  }, [])
 
   return (
     <Modal
@@ -126,7 +132,7 @@ function NewBillingModal({ header, onAddBill }: Props) {
               <DatePicker
                 selectsRange={false}
                 onChange={(date) =>
-                  setBill({ ...bill, usedDate: String(date) })
+                  setBill({ ...bill, usedDate:  })
                 }
                 value={bill.usedDate}
               />
@@ -145,4 +151,4 @@ function NewBillingModal({ header, onAddBill }: Props) {
   )
 }
 
-export default NewBillingModal
+export default AddBillingModal

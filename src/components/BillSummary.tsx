@@ -8,7 +8,7 @@ import { readFileAsArrayBuffer } from '@/utils/fileUtil'
 import { addComma } from '@/utils/stringUtil'
 import { convertKBankBills, KBankBill, sheetToJson } from '@/utils/xlsxUtil'
 
-import NewBillingModal from './NewBillingModal'
+import AddBillingModal from './AddBillingModal'
 
 const Container = styled.div`
   position: sticky;
@@ -34,12 +34,12 @@ const Count = styled.span`
 const Sum = styled.span``
 
 export interface Props {
-  onLoadBill: (bills: Bill[]) => void
+  onLoadBills: (bills: Bill[]) => void
   selectedBills: Bill[]
   onAddBill: (bill: Bill) => void
 }
 
-function BillSummary({ onLoadBill, selectedBills, onAddBill }: Props) {
+function BillSummary({ onLoadBills, selectedBills, onAddBill }: Props) {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const sumAmount = useMemo(
@@ -74,7 +74,7 @@ function BillSummary({ onLoadBill, selectedBills, onAddBill }: Props) {
       const kBankBills = sheetToJson(workSheet) as KBankBill[]
       const bills = convertKBankBills(kBankBills)
 
-      onLoadBill(bills)
+      onLoadBills(bills)
     } catch {
       alert('이용 내역을 불러오는데 실패했습니다.')
     }
@@ -94,7 +94,7 @@ function BillSummary({ onLoadBill, selectedBills, onAddBill }: Props) {
         <Button primary size="small" onClick={handleLoadBillClick}>
           이용 내역 불러오기
         </Button>
-        <NewBillingModal header="이용 내역 추가하기" onAddBill={onAddBill} />
+        <AddBillingModal header="이용 내역 추가하기" onAddBill={onAddBill} />
         <input
           ref={inputRef}
           type="file"
