@@ -15,7 +15,9 @@ function Billing() {
 
   const handleAddBill = useCallback(
     (bill: Bill) => {
-      setBills([...bills, bill])
+      setBills(
+        [...bills, bill].sort((a, b) => a.usedDate.localeCompare(b.usedDate)),
+      )
     },
     [bills],
   )
@@ -29,8 +31,6 @@ function Billing() {
       const newBills = [...prev]
 
       newBills.splice(index, 1)
-
-      console.log(bills)
 
       return newBills
     })

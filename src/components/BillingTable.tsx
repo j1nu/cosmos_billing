@@ -70,8 +70,18 @@ function BillingTable({ bills, onSelect, onDelete }: ComponentProps) {
   const handleDeleteBill = useCallback(
     (index: number) => {
       onDelete(index)
+
+      if (selectedBills[index] !== undefined) {
+        setSelectedBills((prev) => {
+          const newSelectedBills = { ...prev }
+
+          delete newSelectedBills[index]
+
+          return newSelectedBills
+        })
+      }
     },
-    [onDelete],
+    [onDelete, selectedBills],
   )
 
   const columns = useMemo<Column<Bill>[]>(

@@ -1,12 +1,16 @@
 import 'react-datepicker/dist/react-datepicker.css'
 
 import styled from '@emotion/styled'
+import ko from 'date-fns/locale/ko'
 import React, { useRef, useState } from 'react'
 import { useCallback } from 'react'
-import DatePicker from 'react-datepicker'
+import DatePicker, { registerLocale } from 'react-datepicker'
 import { Button, Form, Modal, ModalActions } from 'semantic-ui-react'
 
 import { Bill } from '@/types'
+import { formatToyyyyMMdd } from '@/utils/dateUtil'
+
+registerLocale('ko', ko)
 
 const InputContainer = styled.div`
   display: flex;
@@ -35,7 +39,7 @@ function AddBillingModal({ header, onAddBill }: Props) {
   const [open, setOpen] = React.useState<boolean>(false)
 
   const [bill, setBill] = useState<Bill>({
-    usedDate: Date(),
+    usedDate: formatToyyyyMMdd(new Date()),
     storeName: '',
     usedAmount: 0,
     usedType: '',
@@ -54,7 +58,7 @@ function AddBillingModal({ header, onAddBill }: Props) {
       setOpen(false)
 
       setBill({
-        usedDate: Date(),
+        usedDate: formatToyyyyMMdd(new Date()),
         storeName: '',
         usedAmount: 0,
         usedType: '',
@@ -127,18 +131,31 @@ function AddBillingModal({ header, onAddBill }: Props) {
                 handleChangeNewBill(event.target)
               }}
             ></Form.Input>
+            <Form.Input
+              label="출금처"
+              name="accountName"
+              type="text"
+              placeholder="이용금액"
+              value={bill.accountName}
+              onChange={(event) => {
+                handleChangeNewBill(event.target)
+              }}
+            ></Form.Input>
             <div>
               <Label>이용날짜</Label>
               <DatePicker
                 selectsRange={false}
+                showTimeSelect
+                timeFormat="p"
+                locale="ko"
                 onChange={(date) =>
-                  setBill({ ...bill, usedDate:  })
+                  setBill({ ...bill, usedDate: formatToyyyyMMdd(date as Date) })
                 }
                 value={bill.usedDate}
               />
             </div>
-            <HiddenButton ref={buttonRef} type="submit" />
           </InputContainer>
+          <HiddenButton ref={buttonRef} type="submit" />
         </Form>
       </Modal.Content>
       <ModalActions>
