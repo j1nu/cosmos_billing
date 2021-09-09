@@ -135,7 +135,7 @@ function AddBillingModal({ header, onAddBill }: Props) {
               label="출금처"
               name="accountName"
               type="text"
-              placeholder="이용금액"
+              placeholder="출금처"
               value={bill.accountName}
               onChange={(event) => {
                 handleChangeNewBill(event.target)

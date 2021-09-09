@@ -1,14 +1,11 @@
 import styled from '@emotion/styled'
-import React, { useMemo, useRef } from 'react'
-import { Button } from 'semantic-ui-react'
-import XLSX from 'xlsx'
+import React, { useMemo } from 'react'
 
 import { Bill } from '@/types'
-import { readFileAsArrayBuffer } from '@/utils/fileUtil'
 import { addComma } from '@/utils/stringUtil'
-import { convertKBankBills, KBankBill, sheetToJson } from '@/utils/xlsxUtil'
 
 import AddBillingModal from './AddBillingModal'
+import LoadBilling from './LoadBilling'
 
 const Container = styled.div`
   position: sticky;
@@ -33,6 +30,10 @@ const Count = styled.span`
 
 const Sum = styled.span``
 
+const ButtonContainer = styled.div`
+  display: flex;
+`
+
 export interface Props {
   onLoadBills: (bills: Bill[]) => void
   selectedBills: Bill[]
@@ -40,45 +41,10 @@ export interface Props {
 }
 
 function BillSummary({ onLoadBills, selectedBills, onAddBill }: Props) {
-  const inputRef = useRef<HTMLInputElement>(null)
-
   const sumAmount = useMemo(
     () => selectedBills.reduce((prev, current) => prev + current.usedAmount, 0),
     [selectedBills],
   )
-
-  const handleLoadBillClick = () => {
-    if (!inputRef.current) {
-      return
-    }
-
-    inputRef.current.click()
-  }
-
-  const handleBillFileChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const files = e.target.files
-    if (!files) {
-      return
-    }
-
-    const file = files[0]
-
-    try {
-      const arrayBuffer = await readFileAsArrayBuffer(file)
-
-      const { SheetNames, Sheets } = XLSX.read(arrayBuffer, { type: 'array' })
-      const workSheet = Sheets[SheetNames[0]]
-
-      const kBankBills = sheetToJson(workSheet) as KBankBill[]
-      const bills = convertKBankBills(kBankBills)
-
-      onLoadBills(bills)
-    } catch {
-      alert('이용 내역을 불러오는데 실패했습니다.')
-    }
-  }
 
   return (
     <Container>
@@ -90,19 +56,10 @@ function BillSummary({ onLoadBills, selectedBills, onAddBill }: Props) {
           </>
         )}
       </Summary>
-      <div>
-        <Button primary size="small" onClick={handleLoadBillClick}>
-          이용 내역 불러오기
-        </Button>
+      <ButtonContainer>
         <AddBillingModal header="이용 내역 추가하기" onAddBill={onAddBill} />
-        <input
-          ref={inputRef}
-          type="file"
-          accept=".xls, .xlsx"
-          hidden
-          onChange={handleBillFileChange}
-        />
-      </div>
+        <LoadBilling onLoadBills={onLoadBills} />
+      </ButtonContainer>
     </Container>
   )
 }
