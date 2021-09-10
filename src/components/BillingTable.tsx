@@ -149,6 +149,10 @@ function BillingTable({ bills, onSelect, onDelete }: ComponentProps) {
     onSelect(Object.values(selectedBills))
   }, [onSelect, selectedBills])
 
+  useEffect(() => {
+    setSelectedBills({})
+  }, [bills])
+
   return <Table columns={columns} data={data} />
 }
 
