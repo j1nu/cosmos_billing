@@ -12,5 +12,5 @@ export interface Bill {
   usedType?: string
 
   // 매입상태
-  purchaseStatus?: string
+  accountName?: string
 }
