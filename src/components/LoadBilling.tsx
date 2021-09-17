@@ -1,4 +1,3 @@
-import styled from '@emotion/styled'
 import React, { useRef } from 'react'
 import { Dropdown, Menu } from 'semantic-ui-react'
 import XLSX from 'xlsx'
@@ -14,16 +13,16 @@ import {
 } from '@/utils/xlsxUtil'
 
 interface Props {
+  bank: string
   onLoadBills: (bills: Bill[]) => void
+  onChangeBank: (bank: string) => void
 }
 
-function LoadBilling({ onLoadBills }: Props) {
-  const [bank, setBank] = React.useState<string>('')
-
+function LoadBilling({ bank, onLoadBills, onChangeBank }: Props) {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleLoadBillClick = (bank: string) => {
-    setBank(bank)
+    onChangeBank(bank)
 
     if (!inputRef.current) {
       return

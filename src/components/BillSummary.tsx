@@ -35,12 +35,20 @@ const ButtonContainer = styled.div`
 `
 
 export interface Props {
-  onLoadBills: (bills: Bill[]) => void
   selectedBills: Bill[]
+  bank: string
+  onLoadBills: (bills: Bill[]) => void
   onAddBill: (bill: Bill) => void
+  onChangeBank: (bank: string) => void
 }
 
-function BillSummary({ onLoadBills, selectedBills, onAddBill }: Props) {
+function BillSummary({
+  selectedBills,
+  bank,
+  onLoadBills,
+  onAddBill,
+  onChangeBank,
+}: Props) {
   const sumAmount = useMemo(
     () => selectedBills.reduce((prev, current) => prev + current.usedAmount, 0),
     [selectedBills],
@@ -58,7 +66,11 @@ function BillSummary({ onLoadBills, selectedBills, onAddBill }: Props) {
       </Summary>
       <ButtonContainer>
         <AddBillingModal header="이용 내역 추가하기" onAddBill={onAddBill} />
-        <LoadBilling onLoadBills={onLoadBills} />
+        <LoadBilling
+          bank={bank}
+          onLoadBills={onLoadBills}
+          onChangeBank={onChangeBank}
+        />
       </ButtonContainer>
     </Container>
   )

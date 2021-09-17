@@ -14,11 +14,12 @@ type SelectedBills = Record<number, Bill>
 
 export interface ComponentProps {
   bills: Bill[]
+  bank: string
   onSelect: (selectedBills: Bill[]) => void
   onDelete: (index: number) => void
 }
 
-function BillingTable({ bills, onSelect, onDelete }: ComponentProps) {
+function BillingTable({ bills, bank, onSelect, onDelete }: ComponentProps) {
   const [selectedBills, setSelectedBills] = useState<SelectedBills>({})
 
   const isEmpty = useMemo(() => bills.length === 0, [bills.length])
@@ -148,6 +149,10 @@ function BillingTable({ bills, onSelect, onDelete }: ComponentProps) {
   useEffect(() => {
     onSelect(Object.values(selectedBills))
   }, [onSelect, selectedBills])
+
+  useEffect(() => {
+    setSelectedBills({})
+  }, [bank])
 
   return <Table columns={columns} data={data} />
 }

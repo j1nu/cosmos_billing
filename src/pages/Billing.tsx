@@ -8,6 +8,7 @@ import { Bill } from '@/types'
 function Billing() {
   const [bills, setBills] = useState<Bill[]>([])
   const [selectedBills, setSelectedBills] = useState<Bill[]>([])
+  const [bank, setBank] = useState<string>('')
 
   const handleLoadBills = useCallback((bills: Bill[]) => {
     setBills(bills)
@@ -22,10 +23,6 @@ function Billing() {
     [bills],
   )
 
-  const handleSelectBills = useCallback((selectedBills: Bill[]) => {
-    setSelectedBills(selectedBills)
-  }, [])
-
   const handleDeleteBill = useCallback((index: number) => {
     return setBills((prev) => {
       const newBills = [...prev]
@@ -36,15 +33,26 @@ function Billing() {
     })
   }, [])
 
+  const handleSelectBills = useCallback((selectedBills: Bill[]) => {
+    setSelectedBills(selectedBills)
+  }, [])
+
+  const handleChangeBank = useCallback((bank: string) => {
+    setBank(bank)
+  }, [])
+
   return (
     <Layout>
       <BillSummary
-        onLoadBills={handleLoadBills}
         selectedBills={selectedBills}
+        bank={bank}
+        onLoadBills={handleLoadBills}
         onAddBill={handleAddBill}
+        onChangeBank={handleChangeBank}
       />
       <BillingTable
         bills={bills}
+        bank={bank}
         onSelect={handleSelectBills}
         onDelete={handleDeleteBill}
       />
