@@ -3,5 +3,6 @@ export const BILLING_TABLE_COLUMNS = [
   '가맹점명',
   '이용금액',
   '이용구분',
-  '매입상태',
+  '출금처',
+  '수기입력',
 ] as const

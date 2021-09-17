@@ -1,17 +1,25 @@
-import React, { useCallback, useMemo } from 'react'
+import styled from '@emotion/styled'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { useState } from 'react'
-import { Checkbox } from 'semantic-ui-react'
+import { Checkbox, Icon } from 'semantic-ui-react'
 
 import Table, { Column, Row } from '@/components/Table'
 import { Bill } from '@/types'
+
+const Amount = styled.span<{ isNegative: boolean }>`
+  color: ${({ isNegative }) => (isNegative ? 'DarkGrey' : 'black')};
+`
 
 type SelectedBills = Record<number, Bill>
 
 export interface ComponentProps {
   bills: Bill[]
+  bank: string
+  onSelect: (selectedBills: Bill[]) => void
+  onDelete: (index: number) => void
 }
 
-function BillingTable({ bills }: ComponentProps) {
+function BillingTable({ bills, bank, onSelect, onDelete }: ComponentProps) {
   const [selectedBills, setSelectedBills] = useState<SelectedBills>({})
 
   const isEmpty = useMemo(() => bills.length === 0, [bills.length])
@@ -31,13 +39,13 @@ function BillingTable({ bills }: ComponentProps) {
       }
 
       setSelectedBills(() => {
-        const newRowIndex: SelectedBills = {}
+        const newSelectedBills: SelectedBills = {}
 
         bills.forEach((bill, index) => {
-          newRowIndex[index] = bill
+          newSelectedBills[index] = bill
         })
 
-        return newRowIndex
+        return newSelectedBills
       })
     },
     [bills],
@@ -47,17 +55,34 @@ function BillingTable({ bills }: ComponentProps) {
     (row: Row<Bill>, checked?: boolean) => {
       if (!checked) {
         return setSelectedBills((prev) => {
-          const newRowIndex = { ...prev }
+          const newSelectedBills = { ...prev }
 
-          delete newRowIndex[row.index]
+          delete newSelectedBills[row.index]
 
-          return newRowIndex
+          return newSelectedBills
         })
       }
 
       setSelectedBills((prev) => ({ ...prev, [row.index]: row.data }))
     },
     [],
+  )
+
+  const handleDeleteBill = useCallback(
+    (index: number) => {
+      onDelete(index)
+
+      if (selectedBills[index] !== undefined) {
+        setSelectedBills((prev) => {
+          const newSelectedBills = { ...prev }
+
+          delete newSelectedBills[index]
+
+          return newSelectedBills
+        })
+      }
+    },
+    [onDelete, selectedBills],
   )
 
   const columns = useMemo<Column<Bill>[]>(
@@ -81,11 +106,33 @@ function BillingTable({ bills }: ComponentProps) {
       { accessor: 'usedDate', header: '이용일시' },
       { accessor: 'storeName', header: '가맹점명' },
       {
+        cell: ({ row }) => (
+          <Amount isNegative={row.data.usedAmount < 0}>
+            {row.data.usedAmount}
+          </Amount>
+        ),
         accessor: 'usedAmount',
         header: '이용금액',
       },
       { accessor: 'usedType', header: '이용구분' },
-      { accessor: 'purchaseStatus', header: '매입상태' },
+      { accessor: 'accountName', header: '출금처' },
+      {
+        cell: ({ row }) => (
+          <>
+            {row.data.manual && (
+              <Icon
+                name="close"
+                color="grey"
+                onClick={() => {
+                  handleDeleteBill(row.index)
+                }}
+              />
+            )}
+          </>
+        ),
+        accessor: 'manual',
+        header: '',
+      },
     ],
     [
       isEmpty,
@@ -93,10 +140,19 @@ function BillingTable({ bills }: ComponentProps) {
       handleSelectAllChange,
       selectedBills,
       handleSelectChange,
+      handleDeleteBill,
     ],
   )
 
   const data = useMemo<Bill[]>(() => [...bills], [bills])
+
+  useEffect(() => {
+    onSelect(Object.values(selectedBills))
+  }, [onSelect, selectedBills])
+
+  useEffect(() => {
+    setSelectedBills({})
+  }, [bank])
 
   return <Table columns={columns} data={data} />
 }
