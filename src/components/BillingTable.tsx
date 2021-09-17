@@ -1,23 +1,17 @@
-import styled from '@emotion/styled'
-import React, { useCallback, useEffect, useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { useState } from 'react'
 import { Checkbox } from 'semantic-ui-react'
 
 import Table, { Column, Row } from '@/components/Table'
 import { Bill } from '@/types'
 
-const Amount = styled.span<{ isNegative: boolean }>`
-  color: ${({ isNegative }) => (isNegative ? 'DarkGrey' : 'black')};
-`
-
 type SelectedBills = Record<number, Bill>
 
 export interface ComponentProps {
   bills: Bill[]
-  onSelect: (selectedBills: Bill[]) => void
 }
 
-function BillingTable({ bills, onSelect }: ComponentProps) {
+function BillingTable({ bills }: ComponentProps) {
   const [selectedBills, setSelectedBills] = useState<SelectedBills>({})
 
   const isEmpty = useMemo(() => bills.length === 0, [bills.length])
@@ -37,13 +31,13 @@ function BillingTable({ bills, onSelect }: ComponentProps) {
       }
 
       setSelectedBills(() => {
-        const newSelectedBills: SelectedBills = {}
+        const newRowIndex: SelectedBills = {}
 
         bills.forEach((bill, index) => {
-          newSelectedBills[index] = bill
+          newRowIndex[index] = bill
         })
 
-        return newSelectedBills
+        return newRowIndex
       })
     },
     [bills],
@@ -53,11 +47,11 @@ function BillingTable({ bills, onSelect }: ComponentProps) {
     (row: Row<Bill>, checked?: boolean) => {
       if (!checked) {
         return setSelectedBills((prev) => {
-          const newSelectedBills = { ...prev }
+          const newRowIndex = { ...prev }
 
-          delete newSelectedBills[row.index]
+          delete newRowIndex[row.index]
 
-          return newSelectedBills
+          return newRowIndex
         })
       }
 
@@ -87,16 +81,11 @@ function BillingTable({ bills, onSelect }: ComponentProps) {
       { accessor: 'usedDate', header: '이용일시' },
       { accessor: 'storeName', header: '가맹점명' },
       {
-        cell: ({ row }) => (
-          <Amount isNegative={row.data.usedAmount < 0}>
-            {row.data.usedAmount}
-          </Amount>
-        ),
         accessor: 'usedAmount',
         header: '이용금액',
       },
       { accessor: 'usedType', header: '이용구분' },
-      { accessor: 'accountName', header: '출금처' },
+      { accessor: 'purchaseStatus', header: '매입상태' },
     ],
     [
       isEmpty,
@@ -108,10 +97,6 @@ function BillingTable({ bills, onSelect }: ComponentProps) {
   )
 
   const data = useMemo<Bill[]>(() => [...bills], [bills])
-
-  useEffect(() => {
-    onSelect(Object.values(selectedBills))
-  }, [onSelect, selectedBills])
 
   return <Table columns={columns} data={data} />
 }

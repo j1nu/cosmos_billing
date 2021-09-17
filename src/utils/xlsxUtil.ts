@@ -22,8 +22,7 @@ export function convertKBankBills(kBankBills: KBankBill[]) {
       const bill: Bill = {
         usedDate: `${승인일자} ${승인시각}`,
         storeName: 가맹점명,
-        usedAmount: Number(이용금액.replace(/[^\d-]/g, '')),
-        accountName: 'KBank',
+        usedAmount: Number(이용금액.replace(/[^\d]/g, '')),
       }
 
       return bill
