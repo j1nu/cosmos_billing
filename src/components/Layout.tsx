@@ -4,6 +4,8 @@ import React, { ReactNode } from 'react'
 const Container = styled.div`
   padding: 3rem 0;
   background-color: LightGray;
+  min-height: 100vh;
+  height: 100%;
 `
 
 const Content = styled.div`
